@@ -31,4 +31,20 @@ function fetchVCardData(toHTMLDOM){
      }
    })
    console.log("map: ", cardMap);
+   console.log("JSON: ",  map_to_object(cardMap));
+   dataJSON = map_to_object(cardMap);
 }
+
+//https://gist.github.com/davemackintosh/3b9c446e8681f7bbe7c5.js
+function map_to_object(map) {
+    const out = Object.create(null)
+    map.forEach((value, key) => {
+      if (value instanceof Map) {
+        out[key] = map_to_object(value)
+      }
+      else {
+        out[key] = value
+      }
+    })
+    return out
+  }
