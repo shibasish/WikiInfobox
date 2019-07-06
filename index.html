@@ -7,16 +7,21 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-
 </head>
 
-<body>
+<body onload="myFunc">
+  <h1>Wikipedia Info Section</h1>
+  <h2>Fun project which extracts the Info section on the right side of the Wiki page and
+      visualizes as a Graph.
+  </h2>
+  <h3>Please upload any of the provided wiki HTML files</h3>
+
   <input type="file" id="fileInput" />
   <div id="result"></div>
 </body>
+<!-- visualization library -->
 <script src="node_modules/vis/dist/vis.min.js"></script>
 <link rel="stylesheet" src="node_modules/vis/dist/vis-network.min.css">
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="script.js"></script>
-
 </html>
