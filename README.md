@@ -12,5 +12,5 @@ https://www.npmjs.com/get-npm
 # Running the application
 1. cd to the project root directory
 2. run : npm install
-3. run: http-server
-4. Access the project url: localhost:8080/index.html
+3. run : npm install -g http-server
+4. run: http-server -o http://localhost:8080/index.html
