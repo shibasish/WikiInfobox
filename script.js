@@ -1,33 +1,10 @@
-myFunc = function(){
+myFunc = function() {
   const properties = {
     "cardMap": null,
     "nodes": [],
     "edges": [],
     "network": null,
     "container": document.getElementById("result"),
-    "networkOptions": {                     //  options property to customise the  graph
-      "physics": {
-          "barnesHut": {
-            "avoidOverlap": 1,
-            "springConstant": 0,
-            "centralGravity": 1,
-        }
-      },
-      "groups": {
-        "root": {
-          "shape": "ellipse",
-          "color": "#e8d585"
-        },
-        "odd": {
-          "shape": "ellipse",
-          "color": "#ff829d"
-        },
-        "even": {
-          "shape": "ellipse",
-          "color": "#6fcdcd"
-        }
-      }
-    }
   }
 
   // add event handler callback function when a file is uploaded
@@ -90,7 +67,8 @@ myFunc = function(){
 
   //use of vis.js
   function createNetwork() {
-    let counter = 0, data;
+    let counter = 0,
+      data;
 
     properties.cardMap.forEach((value, key) => {
       createNode(counter, value);
@@ -103,34 +81,63 @@ myFunc = function(){
       edges: properties.edges
     };
 
+    var networkOptions =  { //  options property to customise the  graph
+      physics: {
+        barnesHut: {
+          avoidOverlap: 1,
+          springConstant: 0,
+          centralGravity: 1,
+        }
+      },
+      groups: {
+        root: {
+          shape: "circle",
+          color: "#ff829d"
+        },
+        even: {
+          shape: "box",
+          color: "#6fcdcd"
+        }
+      }
+    }
     // all magic happens here, create the network canvas
-    network = new vis.Network(properties.container, data, properties.networkOptions);
+    network = new vis.Network(properties.container, data, networkOptions);
   }
 
   function createNode(counter, value) {
+    // Static Width (Plain Regex)
+const wrap = (value) => value.replace(
+    /(?![^\n]{1,32}$)([^\n]{1,32})\s/g, '$1\n'
+);
     switch (true) {
       case counter === 0:
         properties.nodes.push({
           id: counter,
-          label: value,
+          x:0,
+          y:0,
+          shadow:true,
+          // fixed:{
+          //   x:true,
+          //   y:true
+          // },
+          font: {
+            size: 30,
+          },
+          // size: 60,
+          label: wrap(value),
           group: "root"
         })
         break;
-      case (counter % 2 === 0):
+      default:
         properties.nodes.push({
           id: counter,
-          label: value,
+          shadow:true,
+          font: {
+            size: 30,
+          },
+          label: wrap(value),
           group: "even"
         })
-        break;
-      case (counter % 2 != 0):
-        properties.nodes.push({
-          id: counter,
-          label: value,
-          group: "odd"
-        })
-        break;
-      default:
         break;
     }
   }
@@ -139,6 +146,10 @@ myFunc = function(){
     properties.edges.push({
       from: 0,
       to: counter,
+      shadow:true,
+      font:{
+        size: 25
+      },
       label: key
     })
   }
