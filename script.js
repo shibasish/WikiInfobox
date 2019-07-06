@@ -1,39 +1,28 @@
 var cardMap;
-var dataJSON;
 var nodes = [];
 var edges = [];
 var network = null;
-var options = {
-  nodes: {
-    scaling: {
-      min: 16,
-      max: 32
-    }
-  },
-  edges: {
-    color: "green",
-    smooth: false
-  },
-  physics: {
-    barnesHut: {
-      gravitationalConstant: -30000
-    },
-    stabilization: {
-      iterations: 2500
-    }
-  }
+var data = {
+  nodes: nodes,
+  edges: edges
 };
+var container = document.getElementById('result');
 
 document.getElementById('fileInput').addEventListener('change', readFile, false);
 
 function readFile(evt) {
+  // if(container.childNodes.length>0){
+  //   for(var i=0; i< container.childNodes.length;i++)
+  //     container.removeChild(container.childNodes[i]);
+  //   nodes = []; edges = [];
+  // }
   //Retrieve the first (and only!) File from the FileList object
   var f = evt.target.files[0];
   var r = new FileReader();
   r.onload = function(content) {
     var toHTMLDOM = convertToHTMLDOM(content);
     fetchVCardData(toHTMLDOM);
-    createNetwork()
+    createNetwork();
   }
   r.readAsText(f);
 }
@@ -49,50 +38,73 @@ function fetchVCardData(toHTMLDOM) {
     if (el.id == "content") {
       var element = el.getElementsByTagName('table');
       var vCardElement = element[0];
-      for (var i = 2; i < vCardElement.tBodies[0].childNodes.length; i++) {
+      for (var i = 1; i < vCardElement.tBodies[0].childNodes.length; i++) {
+        if (i == 1) {
+          cardMap.set("name", vCardElement.tBodies[0].childNodes[i].cells[0].innerText);
+          console.log(vCardElement.tBodies[0].childNodes[i].cells[0]);
+        }
         if (typeof vCardElement.tBodies[0].childNodes[i].cells[0] != "undefined" && typeof vCardElement.tBodies[0].childNodes[i].cells[1] != "undefined")
           cardMap.set(vCardElement.tBodies[0].childNodes[i].cells[0].innerText, vCardElement.tBodies[0].childNodes[i].cells[1].innerText);
       }
     }
   })
-  dataJSON = map_to_object(cardMap);
-  console.log(dataJSON);
 }
 
-//https://gist.github.com/davemackintosh/3b9c446e8681f7bbe7c5.js
-function map_to_object(map) {
-  const out = Object.create(null)
-  map.forEach((value, key) => {
-    if (value instanceof Map) {
-      out[key] = map_to_object(value)
-    } else {
-      out[key] = value
-    }
-  })
-  return out
-}
-
-function createNetwork(){
+function createNetwork() {
   let counter = 0;
   cardMap.forEach((value, key) => {
-    nodes.push({
-      id: counter,
-      label: `${{key:value}}`,
-      shape: "triangle"
-    })
+    switch (true) {
+      case counter == 0:
+        nodes.push({
+          id: counter,
+          label: value,
+          group: "root"
+        })
+        break;
+      case (counter % 2 == 0):
+        nodes.push({
+          id: counter,
+          label: value,
+          group: "even"
+        })
+        break;
+      case counter % 2 != 0:
+        nodes.push({
+          id: counter,
+          label: value,
+          group: "odd"
+        })
+    }
+
     edges.push({
       from: 0,
       to: counter,
-      label: "edge"
+      label: key
     })
-    counter ++;
+    counter++;
   })
-
-  var container = document.getElementById('result');
-  var data = {
-    nodes: nodes,
-    edges: edges
+  var options = {
+    physics: {
+      barnesHut: {
+        avoidOverlap: 1,
+        springConstant: 0,
+        centralGravity: 1,
+      }
+    },
+    groups: {
+      root: {
+        shape: 'ellipse',
+        color: '#e8d585' // orange
+      },
+      odd: {
+        shape: 'ellipse',
+        color: "#ff829d" // blue ff829d
+      },
+      even: {
+        shape: 'ellipse',
+        color: "#6fcdcd" // purple
+      }
+    }
   };
-
   network = new vis.Network(container, data, options);
 }
