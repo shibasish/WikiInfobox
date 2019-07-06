@@ -6,25 +6,25 @@ myFunc = function(){
     "network": null,
     "container": document.getElementById("result"),
     "networkOptions": {                     //  options property to customise the  graph
-      physics: {
-        barnesHut: {
-          avoidOverlap: 1,
-          springConstant: 0,
-          centralGravity: 1,
+      "physics": {
+          "barnesHut": {
+            "avoidOverlap": 1,
+            "springConstant": 0,
+            "centralGravity": 1,
         }
       },
-      groups: {
-        root: {
-          shape: "ellipse",
-          color: "#e8d585"
+      "groups": {
+        "root": {
+          "shape": "ellipse",
+          "color": "#e8d585"
         },
-        odd: {
-          shape: "ellipse",
-          color: "#ff829d"
+        "odd": {
+          "shape": "ellipse",
+          "color": "#ff829d"
         },
-        even: {
-          shape: "ellipse",
-          color: "#6fcdcd"
+        "even": {
+          "shape": "ellipse",
+          "color": "#6fcdcd"
         }
       }
     }
